@@ -38,6 +38,7 @@ Resources:
           - DeviceName: /dev/sdh
             Ebs:
               VolumeSize: '10'
+        KeyName: myWebKeypair
 
   WebAppSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -51,6 +52,10 @@ Resources:
         FromPort: 80
         ToPort: 80
         SourceSecurityGroupId: !Ref LoadBalancerSecurityGroup
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        SourceSecurityGroupId: !Ref BastionSecurityGroup
       SecurityGroupEgress:
       - IpProtocol: tcp
         FromPort: 0
@@ -181,6 +186,42 @@ Resources:
       Path: '/'
       Roles:
       - !Ref IAMRole
+
+  Bastion:
+    Type: AWS::EC2::Instance
+    Properties:
+      InstanceType: t2.micro
+      KeyName: myWebKeypair
+      ImageId: ami-005fc0f236362e99f
+
+      SecurityGroupIds:
+        - !Ref BastionSecurityGroup
+
+      # Use either any public subnet
+      SubnetId:
+        Fn::ImportValue: !Sub "${ProjectName}-public-subnet-1"
+
+      # this helps us identify which EC2 instance is the Bastion Host
+      Tags:
+        - Key: Name
+          Value: "Bastion Host"
+
+  # The Security Group of the Bastion Host
+  BastionSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow public SSH access to the bastion host
+      VpcId:
+        Fn::ImportValue:
+          !Sub "${ProjectName}-vpc"
+      SecurityGroupIngress:
+      # Allow SSH access to the bastion host
+      # Ideally, set the ip address of your local computer. In this case, though,
+      # let's just allow any ip address.
+      - IpProtocol: tcp
+        FromPort: 22
+        ToPort: 22
+        CidrIp: 0.0.0.0/0
 
 Outputs:
 
