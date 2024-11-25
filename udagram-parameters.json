@@ -1,0 +1,10 @@
+[
+    {
+        "ParameterKey": "ProjectName",
+        "ParameterValue": "project2-jasin-zujovic"
+    },
+    {
+        "ParameterKey": "DesiredCapacity",
+        "ParameterValue": "4"
+    }
+]
