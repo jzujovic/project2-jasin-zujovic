@@ -36,7 +36,7 @@ One of **create**, **update**, or **delete** must be selected.
 ```
 With the **udagram** stack running, output the public URL and update it in this document.
 
-Click to test: 
+Click to test: http://udagra-LoadB-7Darm5NlstiT-2123761080.us-east-1.elb.amazonaws.com
 
 ## Infrastructure diagram
 ![Infrastructure diagram](infra-diagram.png "Infrastructure diagram")
